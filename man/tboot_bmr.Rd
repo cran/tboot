@@ -7,9 +7,9 @@
 tboot_bmr(nrow, weights_bmr, tol_rel_sd = 0.01)
 }
 \arguments{
-\item{nrow}{number of rows in the new bootstrapped dataset.}
+\item{nrow}{Number of rows in the new bootstrapped dataset.}
 
-\item{weights_bmr}{an object of class 'tweights' output from the 'tweights' function.}
+\item{weights_bmr}{An object of class 'tweights_bmr' output from the 'tweights_bmr' function.}
 
 \item{tol_rel_sd}{An error will be called if for some simulation if the target is not achievable with the data. However, the error will only be called if max absolute difference releative to the marginal standard is greater than specified.}
 }

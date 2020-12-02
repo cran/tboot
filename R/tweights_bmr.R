@@ -1,21 +1,21 @@
 #' @title Function tweights_bmr
-#' @description Setup the needed pre-requisites in order to prepare for bayesian marginal reconstruction (including a call to tweights). Takes as input simulations from the posterior marginal distribution of variables in a dataset.
+#' @description Set up the needed prerequisites in order to prepare for Bayesian marginal reconstruction (including a call to tweights). Takes as input simulations from the posterior marginal distribution of variables in a dataset.
 #' @seealso \code{\link{tweights}}
 #' @export
 #' @param dataset Data frame or matrix to use to find row weights.
 #' @param marginal Must be a named list with each element a vector of simulations of the marginal distribution of the posterior mean of data in the dataset.
-#' @param distance The distance measure to minimize. Must be either 'euchlidean' or 'kl' (i.e. Kullback-Leibler). 'klqp' is recomneded.
+#' @param distance The distance to minimize. Must be either 'euchlidean,' 'klqp' or 'klpq' (i.e. Kullback-Leibler). 'klqp' which is exponential tilting is recommended.
 #' @param maxit Defines the maximum number of iterations for optimizing 'kl' distance.
-#' @param tol Tolerance. If the achieved mean is to far from the target (i.e. as defined by tol) an error will be thrown.
-#' @param warningcut Sets the cutoff for determining when a large weight will trigger a warnint.
-#' @param silent Allows silencing some messages.
-#' @param Nindependent Assumes the input also includes 'Nindependent'samples with independent columns. See details.
+#' @param tol Tolerance. If the achieved mean is too far from the target (i.e. as defined by tol) an error will be thrown.
+#' @param warningcut Sets the cutoff for determining when a large weight will trigger a warning.
+#' @param silent Allows silencing of some messages.
+#' @param Nindependent Assumes the input also includes 'Nindependent' samples with independent columns. See details.
 #' @details
 #' Reconstructs a correlated joint posterior from simulations from a marginal posterior.
-#' Algorythm is summarized more fully in the vignettes.
+#' The algorithm is summarized more fully in the vignettes.
 #' The 'Nindependent' option augments the dataset by assuming some additional specified
-#' number of patients. These pateints are assumed to made up of a random bootstrapped sample
-#' from the dataset for each variable marginaly leading to indepenent variables.
+#' number of patients. These patients are assumed to made up of a random bootstrapped sample
+#' from the dataset for each variable marginally leading to independent variables.
 #' @return 
 #' An object of type \code{tweights}. This object conains the following components:
 #' \describe{
@@ -27,7 +27,7 @@
 #'   \item{distance,maxit,tol, Nindependent, warningcut}{Inputed values to 'tweights_bmr'.}
 #'   \item{Nindependent}{Inputed 'Nindependent' option.}
 #'   \item{augmentWeights}{Used for 'Nindependent' option weights for each variable.}
-#'   \item{weights}{tilted weights for resampling}
+#'   \item{weights}{Tilted weights for resampling}
 #'   \item{originalTarget}{Will be null if target was not changed.}
 #'   \item{marginal_sd}{Standard deviation of the marginals.}
 #' }

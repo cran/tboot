@@ -12,14 +12,14 @@ vignette: >
 
 # Tilted Bootstrap
 
-The tilted bootstrap is a weighted resampling technique. The goal is to take a reasonably realistic sample of the rows of dataset in such a way that the column means approximate a user-defined target. In other words, the user can control the marginal means while still preserving intricate relationships among the variables. The "Tilted Bootstrap" is related to the inferential methods proposed by Efron and others [@efron1981nonparametric]. However, the methods implemented in the 'tboot' package are used in a multivariate situation and intended for simulating future outcomes instead of making inference. 
+The tilted bootstrap is a weighted resampling technique. The goal is to take a reasonably realistic sample of the rows of a dataset in such a way that the column means approximate a user-defined target. In other words, the user can control the marginal means while still preserving intricate relationships among the variables. The "Tilted Bootstrap" is related to the inferential methods proposed by Efron and others [@efron1981nonparametric]. However, the methods implemented in the 'tboot' package are used in a multivariate situation and intended for simulating future outcomes instead of making inference. 
 
 This vignette is a tutorial on the use of the 'tboot' and 'tweights' functions which may be used for 'scenario based' frequentist simulations. That is, the user must specify the exact mean for each variable to perform the simulation. An alternative Bayesian approach where the user specifies a marginal distribution is also implemented in the 'tboot' package in the 'tboot_bmr,' 'post_bmr,' and 'tweights_bmr.' A seperate vignette is available as a tutorial for the Bayesian approach. 
 
 # A simulated example dataset
 
 
-As and example, we simulate the following simple dataset with some categorical, continuous and binary variables.
+As an example, we simulate the following simple dataset with some categorical, continuous and binary variables.
 
 ```{r sim, cache = FALSE}
 library(tboot)
@@ -84,41 +84,41 @@ The red line in the histogram above represents the probability for uniform resam
 
 # Example 2: Constraining the mean for a subset of the variables
 
-Suppose we wish to constrain the mean for only as subset of the variables. For example, we may wish to constrain only the variables 'quant2' and 'bin1' to have a mean value of 0.4 and 0.5 respectively. We would determine the weights as follows:
+Suppose we wish to constrain the mean for only a subset of the variables. For example, we may wish to constrain only the variables 'quant2' and 'bin1' to have a mean value of 0.4 and 0.5 respectively. We would determine the weights as follows:
 ```{r targetweight, cache = FALSE}
 weights <- tweights(dataset = dataset, 
                     target = c(quant1=0.5, quant2=0.5))
 ```
 
-We can now bootstrap from the entire dataset as like this:
+We can now bootstrap from the entire dataset like this:
 ```{r boot2, cache = FALSE}
 boot <- tboot(weights, nrow = 1e5)
 rbind("dataset mean"    = colMeans(dataset),
       "tbootstrap mean" = colMeans(boot))
 ```
 
-As may be seen, by changing the target mean of 'quant2' and 'bin1' we have also significantly changed the mean of other variables such as 'quant1' and 'bin2.' In many cases this is exactly what we would want to do, but it may occasionally be problematic. For example, if the one of the variables is a baseline variable in a clinical trial. In this case, it is recommended that the user constrain the mean of the baseline covariate to be the same as in the observed data.
+As may be seen, by changing the target mean of 'quant2' and 'bin1' we have also significantly changed the mean of other variables such as 'quant1' and 'bin2.' In many cases this is exactly what we would want to do, but it may occasionally be problematic. For example, if one of the variables is a baseline variable in a clinical trial. In this case, it is recommended that the user constrain the mean of the baseline covariate to be the same as in the observed data.
 
-The actual weights for each sample may be extracted as 'weights$weigths.' As an instructive look at what the weights represent here is a graph of the weights. The red point marks the position of the new assumed mean while the black point marks the position of the data sample mean.
+The actual weights for each sample may be extracted as 'weights$weigths.' As an instructive look at what the weights represent, below is a graph of the weights. The red point marks the position of the new assumed 'target' mean while the black point marks the position of the data sample mean.
 
 ```{r boot21, cache = FALSE}
 pltdta=data.frame(dataset[,c("quant1", "quant2")], weights=weights$weights)
 library(ggplot2)
 ggplot(pltdta, aes(x=quant1, y=quant2, color=weights)) + geom_point() + 
   geom_point(aes(x=.6, y=.6), shape = 3, colour = "red", size = 2, stroke = 3)+
-  geom_point(aes(x=mean(pltdta$quant1), y=mean(pltdta$quant2)),
+  geom_point(aes(x=mean(quant1), y=mean(quant2)),
              shape = 3, colour = "black",  size = 2, stroke = 3)
 
 ```
 
 # Example 3: Constraining the mean and variance for a variable
 
-The variance can also be constrained by creating a variable with the second moment. For example, suppose we wanted to constrain the variance of quant1 to 0.75 and the mean to be 0.5 . We could do as follows:
+The variance can also be constrained by creating a variable with the second moment. For example, suppose we wanted to constrain the variance of quant1 to 0.75 and the mean to be 0.5. We could do as follows:
 
 ```{r var, cache = FALSE}
 dataset=cbind(dataset, quant1_2= (dataset[,"quant1"]-0.5)^2)
 weights <- tweights(dataset = dataset, 
-                    target = c(quant1=0.5, quant1_2=0.75),)
+                    target = c(quant1=0.5, quant1_2=0.75))
 boot <- tboot(weights, nrow = 1e5)
 var(dataset[,"quant1"])
 var(boot[,"quant1"])
@@ -170,9 +170,9 @@ $$
 Here $y$ is a vector of target means for the columns.
 
 ## Solving the optimization problem
-In the case of the Euclidean distance the problem is a standard "Quadratic Programming" problem which we solve using the 'solve.QP' function from the 'quadprog' package.
+In the case of the Euclidean distance, the problem is a standard "Quadratic Programming" problem which we solve using the 'solve.QP' function from the 'quadprog' package.
 
-To solve the problem for the Backwards KL distance, we use the Lagrangian approach. Define $A=[X|1]$ (i.e. $A$ is the concatenation of $X$ with a conformal column of all ones). Also, let $b=[y^T|1]^T$ (i.e $b$ is the $y$ vector with a one element concatenated to the end). The Lagrangian for this optimization problem is
+To solve the problem for the Backwards KL distance, we use the Lagrangian approach. Define $A=[X|1]$ (i.e. $A$ is the concatenation of $X$ with a conformal column of all ones). Also, let $b=[y^T|1]^T$ (i.e. $b$ is the $y$ vector with a "one" element concatenated to the end). The Lagrangian for this optimization problem is
 
 
 $$
@@ -203,7 +203,7 @@ Here, $\lambda^*$ is scaled and recentered to absorb the constants in the equati
 Here, $X_i$ is the $i$'th row of $X$ (expressed as a column vector).  Hence, the locally optimal $q$ in terms of the vector $\lambda^*$ is 
 
 $$q^*(\lambda^*) = \left (e^{-A_1' \lambda^*}, \ldots, e^{-A_n' \lambda^*} \right ) $$
-To find $\lambda^*$, we solve the equation $A'q^*(\lambda^*) = b$ by using the Newton-Raphson algorithm. Thus, it turns out that backwards version of the KL distance results in what is called "exponential tilting." Some of the elegant properties of exponential tilting are described in a different vignette.
+To find $\lambda^*$, we solve the equation $A'q^*(\lambda^*) = b$ by using the Newton-Raphson algorithm. Thus, it turns out that the backwards version of the KL distance results in what is called "exponential tilting." Some of the elegant properties of exponential tilting are described in a different vignette.
 
 
 
@@ -220,7 +220,7 @@ However, tboot's current implementation of forward KL distance is not very stabl
 If the data matrix used to determine the weights is not full rank, tweights will likely fail. Consider reducing the number of columns being constrained to deal with this issue.
 
 ## Constraint not achievable
-Sometimes the desired constraint may not be achievable. This often occurs when the desired target differs from the data by a large amount. If the target is not achievable, tweights will give a warning, then it will find the "closest" achievable constraint. "Closest" is measured by a weighted euclidean distance. Thus the target ($y$) is replaced with:
+Sometimes the desired constraint may not be achievable. This often occurs when the desired target differs from the data by a large amount. If the target is not achievable, tweights will give a warning, then it will find the "closest" achievable constraint. "Closest" is measured by a weighted Euclidean distance. Thus the target ($y$) is replaced with:
 $$
 y_{new}=X'q^*
 $$
@@ -234,7 +234,7 @@ and $S^*={q^*|\space \sum_{i = 1}^n q_i^* = 1}$. The weights ($W$) is a diagonal
 The algorithm may fail to converge properly, and an error or warning will be issued. 
 
 ## Some samples have a very high weight
-As previously mentioned if any sample is too highly weighted, the tilted bootstrap approach is not recommended. See Example 1 above for more discussion about this issue.
+As previously mentioned, if any sample is too highly weighted, the tilted bootstrap approach is not recommended. Somtimes transformations or the removal of outliers can help remediate the issues. See Example 1 above for more discussion about this issue.
 
 ## Augmented Sampling to Improved Stability
 In many cases, the problems described above can be avoided by the use of the 'Nindependent' option in the 'tweights' function. We suggest that typically, if this option is used, the user set Nindependent=1. This means that one one additional "special" sample is assumed to exist in the original data. If 'tboot' draws this special sample, it will proceed to bootstrap each variable independently so that the variables are independent for that patient. The weights for each independent variable bootstrap are set so that (if possible) the "special" sample would average to the target. In effect, the Nindependent option makes the correlation structure slightly less dependent. In exchange for the small bias created, the user will be able to better achieve a target even when the dataset available is small or ill-conditioned. This method is used for the Bayesian marginal reconstruction method as it helps eliminate errors in corners of the parameters space that do not fit well with the data but still occasionally occur. In these cases, the independent sample may occur frequently, so the simulation defaults towards greater independence when the data is not consistent with the parameter.

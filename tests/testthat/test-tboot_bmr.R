@@ -70,7 +70,7 @@ test_that("bmr bootstrap weights yield correct distribution", {
   expect_equal(calculateCorrTweights2, corrPost2, tol = 5e-3)
 
   #Check that the attributes from tboot_bmr are approximately as expected
-  myattr=replicate(2e3, 
+  myattr=replicate(4e3, 
           {
             b=tboot_bmr(2,w1, tol_rel_sd = 3)
             attr(b, "post_bmr")

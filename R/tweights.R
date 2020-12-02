@@ -6,14 +6,14 @@
 #' @export
 #' @param dataset Data frame or matrix to use to find row weights.
 #' @param target Numeric vector of target column means. If the 'target' is named, then all elements of names(target) should be in the dataset.
-#' @param distance The distance to minimize. Must be either 'euchlidean,' 'klqp' or 'klpq' (i.e. Kullback-Leibler). 'klqp' which is expontential tilting is recomneded.
+#' @param distance The distance to minimize. Must be either 'euchlidean,' 'klqp' or 'klpq' (i.e. Kullback-Leibler). 'klqp' which is exponential tilting is recommended.
 #' @param maxit Defines the maximum number of iterations for optimizing 'kl' distance.
-#' @param tol Tolerance. If the achieved mean is to far from the target (i.e. as defined by tol) an error will be thrown.
-#' @param warningcut Sets the cutoff for determining when a large weight will trigger a warnint.
-#' @param silent Allows silencing some messages.
-#' @param Nindependent Assumes the input also includes 'Nindependent'samples with independent columns. See details.
+#' @param tol Tolerance. If the achieved mean is to0 far from the target (i.e. as defined by tol) an error will be thrown.
+#' @param warningcut Sets the cutoff for determining when a large weight will trigger a warning.
+#' @param silent Allows silencing of some messages.
+#' @param Nindependent Assumes the input also includes 'Nindependent' samples with independent columns. See details.
 #' @details
-#' Let \eqn{p_i = 1/n} be  probability of sampling subject \eqn{i} from a dataset with \eqn{n} individuals (i.e. rows of the dataset) in the classic resampling with replacement scheme.
+#' Let \eqn{p_i = 1/n} be the probability of sampling subject \eqn{i} from a dataset with \eqn{n} individuals (i.e. rows of the dataset) in the classic resampling with replacement scheme.
 #' Also, let \eqn{q_i} be the probability of sampling subject \eqn{i} from a dataset with \eqn{n} individuals in our new resampling scheme. Let \eqn{d(q,p)} represent a distance between the two resampling schemes.  The \code{tweights}
 #' function seeks to solve the problem: 
 #' \deqn{q = argmin_p d(q,p)}
@@ -22,21 +22,22 @@
 #' \deqn{  dataset' q = target}
 #' where dataset is a n x K matrix of variables input to the function.
 #' 
-#'   \deqn{d_euclidian(q,p) = sqrt( sum_i (p_i-q_i)^2 )}
-#'   \deqn{d_kl(q,p) = sum_i (log(p_i) - log(q_i))}
+#'   \deqn{d_{euclidian}(q,p) = sqrt( \sum_i (p_i-q_i)^2 )}
+#'   \deqn{d_{kl}(q,p) = \sum_i (log(p_i) - log(q_i))}
 #'
-#' Optimization for euclidean distance is a quadratic program and utilizes the ipop function in kernLab.
-#' The euclidean based solution helps form a starting value which is used along with the constOptim function 
-#' and lagrange multipliers to solve the Kullback-Leibler distance optimization.
-#'   Output is the optimal porbability (p)
+#' Optimization for Euclidean distance is a quadratic program and utilizes the ipop function in kernLab.
+#' Optimization for the others utilize a Newton-Raphson type iterative algorithm.
+#' 
+#' If the original target cannot be achieved. Something close to the original target will be selected.
+#' A warning will be produced and the new target displayed.
 #' 
 #' The 'Nindependent' option augments the dataset by assuming some additional specified
-#' number of patients. These pateints are assumed to made up of a random bootstrapped sample
-#' from the dataset for each variable marginaly leading to indepenent variables. 
+#' number of patients. These patients are assumed to made up of a random bootstrapped sample
+#' from the dataset for each variable marginally leading to independent variables. 
 #' @return 
-#' An object of type \code{tweights}. This object conains the following components:
+#' An object of type \code{tweights}. This object contains the following components:
 #' \describe{
-#'   \item{weights}{tilted weights for resampling}
+#'   \item{weights}{Tilted weights for resampling}
 #'   \item{originalTarget}{Will be null if target was not changed.}
 #'   \item{target}{Actual target that was attempted.}
 #'   \item{achievedMean}{Achieved mean from tilting.}
@@ -380,7 +381,7 @@ tweights <-function(
       colnames(toprint)=colnames(dataset)
     }
     cat("----------------------------------------------------------------\n")
-    cat("Optimization was successful. The weights have a sampleing\ndistribution with means close to the attemted target:\n")
+    cat("Optimization was successful. The weights have a sampling\ndistribution with means close to the attempted target:\n")
     print(toprint)
     cat("Maximum weight was: ", max(weights),"\n")
     if( Nindependent >0 )

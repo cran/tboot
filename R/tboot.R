@@ -3,14 +3,15 @@
 #' the given row-level weights.
 #' @seealso \code{\link{tweights}}
 #' @export
-#' @param nrow number of rows in the new bootstrapped dataset.
-#' @param weights an object of class 'tweights' output from the 'tweights' function.
-#' @param dataset Data frame or matrix to bootstrap. Rows of the dataset must be in the 
+#' @param nrow Number of rows in the new bootstrapped dataset.
+#' @param weights An object of class 'tweights' output from the 'tweights' function.
+#' @param dataset Data frame or matrix to bootstrap. By default, the dataset will come from the tweights
+#' object. Rows of the dataset must be in the 
 #' same order as was used for the 'tweights' call. However the dataset may include
-#' additional columns not included in the 'tweights' calll.
-#' @param fillMissingAug fill in missing augmentation with primary weights resampling.
+#' additional columns not included in the 'tweights' call. 
+#' @param fillMissingAug Fill in missing augmentation with primary weights resampling.
 #' @details
-#' Bootstrap simulates a dataset using the tilted weights. Details a further documented in the vignette.
+#' Bootstrap samples from a dataset using the tilted weights. Details are further described in the vignette.
 #' @return 
 #' A simulated dataset with 'nrow' rows.
 #' @examples

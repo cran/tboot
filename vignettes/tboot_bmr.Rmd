@@ -12,11 +12,11 @@ vignette: >
 
 # Bayesian Marginal Reconstruction
 
-Suppose we are able summarize the current state of scientific knowledge for the mean/proportion of each of several endpoints for a particular treatment using a distribution. The distribution for each endpoint may come from the elicitation of prior information from experts, some initial dataset or some combination of different sources of information. In many cases it will be difficult to arrive at a joint distribution. Only the marginal distribution of each endpoint will be calculated easily. This is particularly true when using external published data where only marginal effects are known, and no patient level data is available. In general assuming independence for the distribution of the mean for each endpoint is not appropriate, as we would expect correlations in the distribution given that many endpoints are correlated. The method described here may be used to simulate from the approximate joint distribution given the marginal distribution and an individual level data set. The correlation structure within the individual level data is used to impute the joint distribution. The method also provides a way to simulate virtual trial data based on the marginal.
+Suppose we are able to summarize the current state of scientific knowledge for the mean/proportion of each of several endpoints for a particular treatment using a distribution. The distribution for each endpoint may come from the elicitation of prior information from experts, some initial dataset or some combination of different sources of information. In many cases it will be difficult to arrive at a joint distribution. Only the marginal distribution of each endpoint will be calculated easily. This is particularly true when using externally published data where only marginal effects are known, and no patient level data is available. In general assuming independence for the distribution of the mean for each endpoint is not appropriate, as we would expect correlations in the distribution given that many endpoints are correlated. The method described here may be used to simulate from the approximate joint distribution given the marginal distribution and an individual level data set. The correlation structure within the individual level data is used to impute the joint distribution. The method also provides a way to simulate virtual trial data based on the marginal.
 
 # A simulated example dataset
 
-As and example, we simulate the following simple dataset with a continuous and two binary variables.
+As an example, we simulate the following simple dataset with a continuous and two binary variables.
 
 ```{r sim, cache = FALSE}
 library(tboot)
@@ -83,7 +83,7 @@ pltdta=do.call(rbind, lapply(c("quant1","bin1", "bin2"),
 ```
 
 
-To simulate a random trial dataset using the parameters from a single draw of 'post_bmr' we use the tboot_bmr function. For example to simulate 100 patients on active treatment:
+To simulate a random trial dataset using the parameters from a single draw of 'post_bmr' we use the tboot_bmr function. For example, to simulate 100 patients on active treatment:
 ```{r tboot_bmr, cache = FALSE}
 active_sample=tboot_bmr(nrow=100, weights_bmr=bmr_active)
 head(active_sample)
@@ -130,10 +130,10 @@ The pvalue matrix above may be analyzed, for example, using the gMCP package if 
 
 
 # Methods
-## The algorythm
-To describe the algorythm, we use the following notation:
+## The algorithm
+To describe the algorithm, we use the following notation:
 
-* $k \in [1,2,...K]$ is the endpoint endex for $K$ endpoints.
+* $k \in [1,2,...K]$ is the endpoint index for $K$ endpoints.
 * $y_{k}$ is a vector of length $J_k$ of simulations of the marginal distribution of the mean of $k^{th}$ endpoint. 
 * $X$ is a matrix of input data with columns for each endpoint. $X_{.k}$ is the vector of data for the $k^{th}$ endpoint.
 * $\hat{y}_k$ is the mean of $y_{k}$.
@@ -141,7 +141,7 @@ To describe the algorythm, we use the following notation:
 
 The algorithm for 'tweights_bmr()' takes $y_{k}$ and $X$ as input and proceeds as follows:
 
-1. Calculate $\hat{y}_k$
+1. Calculate $\hat{y}_k$.
 2. Use tboot to calculate the weights ($w$) which would tilt $X$ such that the mean of $w\cdot X_{.k} = \hat{y}_k$ for all endpoints $k$.  
 3. Calculate the implied weighted correlation ($\hat{C}$) from using weights $w$ for $X$.
 
@@ -160,12 +160,12 @@ The algorithm for 'tboot_bmr()' takes the output from 'tweights_bmr()' and proce
 2. Use tweights and tboot to simulate data with a mean of $\mu$. The option 'Nindependent' is always non-zero to help avoid errors. See the vignette on 'tweights' for more information on this option.
 
 ## Justifying the algorithm
-The algorithm described above may be justified in several ways. First, it is heuristically plausible. One would expect at first thought that when two variables are correlated, a drug which influences one of the variables will most likely influce the other. Second, in some specific cases, the algorythm may be justified via Bayesian Assymptotics using the 'Berstein Von-Misus' theorem. This document will not attempt to fully work out this more theoretical approach.
+The algorithm described above may be justified in several ways. First, it is heuristically plausible. One would expect at first thought that when two variables are correlated, a drug which influences one of the variables will most likely influence the other. Second, in some specific cases, the algorithm may be justified via Bayesian Asymptotics using the 'Berstein Von-Misus' theorem. This document will not attempt to fully work out this more theoretical approach.
 
 ## Considering the limits of 'tboot_bmr'
 The following considerations should be relevent when considering the use of 'tboot_bmr:'
 
-1. Is the relationship between variables found in the available individual level data generalizable to the treatment of interest? That is if the individual data is tilted to reflect the expected mean of the treatment of interest, will the correlation be realisticly similar to the correlation of variable in the treatment of interest. In general, it is expected that the assumptions of 'tboot' will be more believable than the assumption of independence.
+1. Is the relationship between variables found in the available individual level data generalizable to the treatment of interest? That is, if the individual data is tilted to reflect the expected mean of the treatment of interest, will the correlation be realistically similar to the correlation of variables in the treatment of interest. In general, it is expected that the assumptions of 'tboot' will be more believable than the assumption of independence.
 2. Is the individual level data sample size large enough to make inference about correlation?
 3. Did the information about each variable come from different trials? In such cases it may be argued that for large samples sizes the distribution should be independent.
 

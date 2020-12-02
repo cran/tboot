@@ -19,7 +19,7 @@ print.tweights_bmr <- function(x, ...) {
   
   cat("----------------------------------------------------------------\n")
   cat("Object is a 'tweights_bmr' object.\n")
-  cat("Optimization was successful. The weights have a sampleing\ndistribution with means close to the attemted target:\n")
+  cat("Optimization was successful. The weights have a sampling\ndistribution with means close to the attempted target:\n")
   print(toprint)
   cat("Maximum weight was: ", max(weights),"\n")
   if( Nindependent >0 )

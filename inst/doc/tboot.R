@@ -51,14 +51,14 @@ pltdta=data.frame(dataset[,c("quant1", "quant2")], weights=weights$weights)
 library(ggplot2)
 ggplot(pltdta, aes(x=quant1, y=quant2, color=weights)) + geom_point() + 
   geom_point(aes(x=.6, y=.6), shape = 3, colour = "red", size = 2, stroke = 3)+
-  geom_point(aes(x=mean(pltdta$quant1), y=mean(pltdta$quant2)),
+  geom_point(aes(x=mean(quant1), y=mean(quant2)),
              shape = 3, colour = "black",  size = 2, stroke = 3)
 
 
 ## ----var, cache = FALSE-------------------------------------------------------
 dataset=cbind(dataset, quant1_2= (dataset[,"quant1"]-0.5)^2)
 weights <- tweights(dataset = dataset, 
-                    target = c(quant1=0.5, quant1_2=0.75),)
+                    target = c(quant1=0.5, quant1_2=0.75))
 boot <- tboot(weights, nrow = 1e5)
 var(dataset[,"quant1"])
 var(boot[,"quant1"])

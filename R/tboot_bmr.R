@@ -3,8 +3,8 @@
 #' the given row-level weights.
 #' @seealso \code{\link{tweights}}
 #' @export
-#' @param nrow number of rows in the new bootstrapped dataset.
-#' @param weights_bmr an object of class 'tweights' output from the 'tweights' function.
+#' @param nrow Number of rows in the new bootstrapped dataset.
+#' @param weights_bmr An object of class 'tweights_bmr' output from the 'tweights_bmr' function.
 #' @param tol_rel_sd An error will be called if for some simulation if the target is not achievable with the data. However, the error will only be called if max absolute difference releative to the marginal standard is greater than specified.
 #' @details
 #' Simulates a dataset by first simulating from the posterior distribution of the column means and then simulating a dataset with that underlying mean. Details a further documented in the vignette.

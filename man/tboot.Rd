@@ -7,15 +7,16 @@
 tboot(nrow, weights, dataset = weights$dataset, fillMissingAug = TRUE)
 }
 \arguments{
-\item{nrow}{number of rows in the new bootstrapped dataset.}
+\item{nrow}{Number of rows in the new bootstrapped dataset.}
 
-\item{weights}{an object of class 'tweights' output from the 'tweights' function.}
+\item{weights}{An object of class 'tweights' output from the 'tweights' function.}
 
-\item{dataset}{Data frame or matrix to bootstrap. Rows of the dataset must be in the 
+\item{dataset}{Data frame or matrix to bootstrap. By default, the dataset will come from the tweights
+object. Rows of the dataset must be in the 
 same order as was used for the 'tweights' call. However the dataset may include
-additional columns not included in the 'tweights' calll.}
+additional columns not included in the 'tweights' call.}
 
-\item{fillMissingAug}{fill in missing augmentation with primary weights resampling.}
+\item{fillMissingAug}{Fill in missing augmentation with primary weights resampling.}
 }
 \value{
 A simulated dataset with 'nrow' rows.
@@ -25,7 +26,7 @@ Bootstrap \code{nrow} rows of \code{dataset} using
 the given row-level weights.
 }
 \details{
-Bootstrap simulates a dataset using the tilted weights. Details a further documented in the vignette.
+Bootstrap samples from a dataset using the tilted weights. Details are further described in the vignette.
 }
 \examples{
  target=c(Sepal.Length=5.5, Sepal.Width=2.9, Petal.Length=3.4)
